@@ -41,12 +41,18 @@ Router
   .get('/remove/:id', (req, res) => {
         const id = parseInt(req.params.id);
         personRepo.remove(id);
-        const result = 'Last person remove. Total count: ' + personRepo.persons.size;
-        res.send(result);
+        res.redirect(307, '/person/all');
+        // const result = 'Last person remove. Total count: ' + personRepo.persons.size;
+        // res.send(result);
   })
   .post('/save', (req, res) => {
       console.log('this ran');
-      res.status(200).json({ message: 'ok' });
+      //   res.status(200).json({ message: 'ok' });
+      const person = req.body;
+      console.log(person);
+      const result = personRepo.save(person);
+      res.send(result);
+      res.redirect(307, '/person/all')
       //console.log(JSON.stringify(req.body));
       /*res.send(JSON.stringify(req.body));*/
         /*const person = req.body;

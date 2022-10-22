@@ -47,7 +47,17 @@ class PersonRepository {
     }
 
     remove(id) {
-        this.persons.delete(this.persons.get(id))
+        var query = "DELETE FROM users WHERE id = '" + id + "'";
+        db.db.query(query)
+        .then(result => {
+            console.log("Deleted person with name: " + this.getById(id).first_name);
+            this.setPersonList();
+        }).catch(err => {
+            console.log(err);
+            return "Error: Can't delete person with name: " + this.getById(id).first_name;
+        })
+        // return "Deleted person with name: " + this.getById(id).first_name;
+        // this.persons.delete(this.persons.get(id))
         // const keys = Array.from(this.persons.keys());
         // this.persons.delete(keys[keys.length - 1]);
     }
@@ -64,7 +74,7 @@ class PersonRepository {
                 this.setPersonList();
             }).catch(err => {
                 console.log(err);
-                return "Error: Can't update person with name:" + person.first_name;
+                return "Error: Can't update person with name: " + person.first_name;
             })
 
             return "Updated Person with name: " + person.first_name;
@@ -78,7 +88,7 @@ class PersonRepository {
                 this.setPersonList();
             }).catch(err => {
                 console.log(err);
-                return "Error: Can't add person with name:" + person.first_name;
+                return "Error: Can't add person with name: " + person.first_name;
             })
             // this.persons.push(new Person(person.id, person.first_name, person.last_name, person.email))
             return "Added Person with name: " + person.first_name;
