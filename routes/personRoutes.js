@@ -10,10 +10,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
 // Parser to set `req.body`
-app.use(require('body-parser').json());
-//app.use(urlencoded({extended: false}));
-//app.use(bodyParser.json());
-//var jsonParser = bodyParser.json();
+const bodyParser = require("body-parser");
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 const personRepo = require('../repo/personRepository');
 
 Router
@@ -22,43 +20,35 @@ Router
         const result = personRepo.getById(id);
         res.render('editPerson', {
             user: result,
-            title: "EJS example"
+            title: "Person"
         });
   })
   .get('/all', (req, res) => {
         const result = personRepo.getAll();
         res.render('personList', {
             users: result,
-            title: "EJS example"
+            title: "List"
         });
   })
   .get('/addPerson', (req, res) => {
-      //const result = personRepo.getAll();
       res.render('addPerson', {
-          title: "EJS example"
+          title: "Add"
       });
 })
   .get('/remove/:id', (req, res) => {
         const id = parseInt(req.params.id);
         personRepo.remove(id);
-        res.redirect(307, '/person/all');
-        // const result = 'Last person remove. Total count: ' + personRepo.persons.size;
-        // res.send(result);
+        res.redirect('/person/all');
   })
-  .post('/save', (req, res) => {
-      console.log('this ran');
-      //   res.status(200).json({ message: 'ok' });
+  .post('/save', urlencodedParser, (req, res) => {
       const person = req.body;
-      console.log(person);
-      const result = personRepo.save(person);
-      res.send(result);
-      res.redirect(307, '/person/all')
-      //console.log(JSON.stringify(req.body));
-      /*res.send(JSON.stringify(req.body));*/
-        /*const person = req.body;
-        const result = personRepo.save(person);
-        res.send(result);*/
-       // res.redirect(307, '/person/all');
+      console.log("Form values: " + JSON.stringify(person));
+      try {
+        personRepo.save(person);
+        res.redirect('/person/all');
+      } catch (error) {
+        res.status(500).json({ message: 'server error' });
+      }
   });
 
 module.exports = Router;
