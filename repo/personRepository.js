@@ -5,7 +5,7 @@ var db = require('../db/db.js');
 
 class PersonRepository {
 
-    persons = [];
+    // persons = [];
 
     constructor() {
         this.setPersonList();
